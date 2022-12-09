@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sampleadd/controller/addcontroller.dart';
 
 class Home extends StatelessWidget {
@@ -12,40 +14,56 @@ class Home extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: GetBuilder<AddController>(builder: (value) {
-        return ListView(
-          physics: const BouncingScrollPhysics(),
-          children: [
-            const CoustomImageView(),
-            SizedBox(
-              height: size.height * .08,
-            ),
-            const Divider(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              width: size.width,
-              child: Row(
+        return value.isLoading.value
+            ? Center(
+                child: CupertinoActivityIndicator(
+                  color: Colors.amber,
+                ),
+              )
+            : ListView(
+                physics: const BouncingScrollPhysics(),
                 children: [
-                  CoustemModelRow(
-                      title: "Status", subTitle: value.details!.adStatus!),
-                  CoustemModelRow(
-                      title: "Title", subTitle: value.details!.subCategory!),
-                  CoustemModelRow(
-                      title: "AddType", subTitle: value.details!.adType!),
+                  const CoustomImageView(),
+                  SizedBox(
+                    height: size.height * .08,
+                  ),
+                  const Divider(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 12),
+                    width: size.width,
+                    child: Row(
+                      children: [
+                        CoustemModelRow(
+                          title: "Status",
+                          subTitle: value.details!.adStatus!,
+                          size: size,
+                        ),
+                        CoustemModelRow(
+                          title: "Title",
+                          subTitle: value.details!.subCategory!,
+                          size: size,
+                        ),
+                        CoustemModelRow(
+                          title: "AddType",
+                          subTitle: value.details!.adType!,
+                          size: size,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: size.height * .02,
+                  ),
+                  const Divider(),
+                  SpecialMention(size: size),
+                  SizedBox(
+                    height: size.height * .02,
+                  ),
+                  const Divider(),
+                  DetailWidget(size: size),
                 ],
-              ),
-            ),
-            SizedBox(
-              height: size.height * .02,
-            ),
-            const Divider(),
-            SpecialMention(size: size),
-            SizedBox(
-              height: size.height * .02,
-            ),
-            const Divider(),
-            DetailWidget(size: size),
-          ],
-        );
+              );
       }),
     );
   }
@@ -61,173 +79,180 @@ class DetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 36.0, left: 16, top: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "\$2113",
-                style: GoogleFonts.questrial(
-                  fontSize: 31,
-                  color: Colors.grey[700],
-                  fontWeight: FontWeight.bold,
+    return GetBuilder<AddController>(builder: (value) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 36.0, left: 16, top: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "\$${value.details!.price!.toString()}",
+                  style: GoogleFonts.questrial(
+                    fontSize: 31,
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Expanded(child: Container()),
-              Text(
-                "Posted",
-                style: GoogleFonts.questrial(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
+                Expanded(child: Container()),
+                Text(
+                  "Posted",
+                  style: GoogleFonts.questrial(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: size.width * .02,
-              ),
-              Text(
-                "Special Mentions",
-                style: GoogleFonts.questrial(
-                  fontSize: 16,
-                  color: Colors.grey[500],
-                  fontWeight: FontWeight.bold,
+                SizedBox(
+                  width: size.width * .02,
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: size.height * .02,
-          ),
-          Text(
-            "HyndayPM+685, Machanpally",
-            style: GoogleFonts.questrial(
-              fontSize: 31,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+                Text(
+                  value.postedDate,
+                  style: GoogleFonts.questrial(
+                    fontSize: 16,
+                    color: Colors.grey[500],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-          ),
-          SizedBox(
-            height: size.height * .02,
-          ),
-          Text(
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-            style: GoogleFonts.questrial(
-                fontSize: 25,
-                color: Colors.grey[500],
-                fontWeight: FontWeight.w600,
-                wordSpacing: 1,
-                letterSpacing: 1.1,
-                height: 1.5),
-          ),
-          SizedBox(
-            height: size.height * .1,
-          ),
-          Text(
-            "Map",
-            style: GoogleFonts.questrial(
-              fontSize: 31,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+            SizedBox(
+              height: size.height * .02,
             ),
-          ),
-          SizedBox(
-            height: size.height * .02,
-          ),
-          Container(
-            color: Colors.amber,
-            width: size.width,
-            height: size.height / 5,
-          ),
-          SizedBox(
-            height: size.height * .05,
-          ),
-          Text(
-            "From",
-            style: GoogleFonts.questrial(
-              fontSize: 31,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            height: size.height * .01,
-          ),
-          ListTile(
-            contentPadding: const EdgeInsets.only(left: 0, right: 0),
-            leading: const CircleAvatar(
-              //radius: 30,
-
-              foregroundImage: NetworkImage(
-                  "https://images.unsplash.com/photo-1581456495146-65a71b2c8e52?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzF8fHBlcnNvbnxlbnwwfHwwfHw%3D&w=1000&q=80"),
-            ),
-            title: Text(
-              "Jone Cooper",
+            Text(
+              "HyndayPM+685, Machanpally",
               style: GoogleFonts.questrial(
-                fontSize: 26,
+                fontSize: 31,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            subtitle: Text(
-              "Jone Cooper 2017",
+            SizedBox(
+              height: size.height * .02,
+            ),
+            Text(
+              value.details!.description!,
               style: GoogleFonts.questrial(
-                fontSize: 16,
-                // color: Colors.black,
+                  fontSize: 25,
+                  color: Colors.grey[500],
+                  fontWeight: FontWeight.w600,
+                  wordSpacing: 1,
+                  letterSpacing: 1.1,
+                  height: 1.5),
+            ),
+            SizedBox(
+              height: size.height * .06,
+            ),
+            Text(
+              "Map",
+              style: GoogleFonts.questrial(
+                fontSize: 31,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            trailing: IconButton(
-                onPressed: () {}, icon: const Icon(Icons.arrow_forward_ios)),
-          ),
-          SizedBox(
-            height: size.height * .02,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            const Color.fromARGB(255, 26, 39, 65))),
-                    onPressed: () {},
-                    child: Text(
-                      "Make offer",
-                      style: GoogleFonts.questrial(
-                        fontSize: 21,
-                        // color: Colors.black,
-                        letterSpacing: 1.5,
-                        fontWeight: FontWeight.bold,
+            SizedBox(
+              height: size.height * .02,
+            ),
+            Container(
+              color: Colors.amber,
+              width: size.width,
+              height: size.height / 5,
+              child: GoogleMap(
+                initialCameraPosition:
+                    CameraPosition(target: value.loation, zoom: 10),
+                onMapCreated: (controller) => value.addMarker(),
+                markers: value.markers.values.toSet(),
+              ),
+            ),
+            SizedBox(
+              height: size.height * .05,
+            ),
+            Text(
+              "From",
+              style: GoogleFonts.questrial(
+                fontSize: 31,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(
+              height: size.height * .01,
+            ),
+            ListTile(
+              contentPadding: const EdgeInsets.only(left: 0, right: 0),
+              leading: CircleAvatar(
+                //radius: 30,
+
+                foregroundImage: NetworkImage(value.userImage),
+              ),
+              title: Text(
+                value.userDetails!.name!,
+                style: GoogleFonts.questrial(
+                  fontSize: 26,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(
+                "${value.userDetails!.name!}  ${value.userDate}",
+                style: GoogleFonts.questrial(
+                  fontSize: 16,
+                  // color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              trailing: IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.arrow_forward_ios)),
+            ),
+            SizedBox(
+              height: size.height * .02,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 26, 39, 65))),
+                      onPressed: () {},
+                      child: Text(
+                        "Make offer",
+                        style: GoogleFonts.questrial(
+                          fontSize: 21,
+                          // color: Colors.black,
+                          letterSpacing: 1.5,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: size.width * .02,
-              ),
-              SizedBox(
-                height: 50,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.red)),
-                  onPressed: () {},
-                  child: const Icon(Icons.chat_bubble_outline),
+                SizedBox(
+                  width: size.width * .02,
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: size.height * .1,
-          ),
-        ],
-      ),
-    );
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.red)),
+                    onPressed: () {},
+                    child: const Icon(Icons.chat_bubble_outline),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: size.height * .1,
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -241,50 +266,52 @@ class SpecialMention extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Special Mentions",
-              style: GoogleFonts.questrial(
-                fontSize: 16,
-                color: Colors.grey[500],
-                fontWeight: FontWeight.bold,
+    return GetBuilder<AddController>(builder: (value) {
+      return Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Special Mentions",
+                style: GoogleFonts.questrial(
+                  fontSize: 16,
+                  color: Colors.grey[500],
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(
-              height: size.height * .01,
-            ),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: List.generate(
-                9,
-                (index) => Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5.0, horizontal: 3),
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    "2013",
-                    style: GoogleFonts.questrial(
-                      fontSize: 24,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              SizedBox(
+                height: size.height * .01,
+              ),
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: List.generate(
+                  value.spetialMention.length,
+                  (index) => Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 5.0, horizontal: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      value.spetialMention[index],
+                      style: GoogleFonts.questrial(
+                        fontSize: 24,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
@@ -293,14 +320,16 @@ class CoustemModelRow extends StatelessWidget {
     Key? key,
     required this.title,
     required this.subTitle,
+    required this.size,
   }) : super(key: key);
   final String title;
   final String subTitle;
+  final Size size;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
+      padding: const EdgeInsets.only(left: 21.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -311,6 +340,9 @@ class CoustemModelRow extends StatelessWidget {
               color: Colors.grey[500],
               fontWeight: FontWeight.bold,
             ),
+          ),
+          SizedBox(
+            height: size.height * .009,
           ),
           Container(
             decoration: BoxDecoration(
@@ -353,7 +385,8 @@ class CoustomImageView extends StatelessWidget {
               height: 500,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: NetworkImage(data.addImag[0]), fit: BoxFit.fill)),
+                      image: NetworkImage(data.addImag[data.currentIndex]),
+                      fit: BoxFit.fill)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -385,42 +418,11 @@ class CoustomImageView extends StatelessWidget {
                 ),
               ),
             ),
-            // Align(
-            //   child:
-            //    Row(
-            //     children: [
-            //       IconButton(
-            //         onPressed: () {},
-            //         icon: const Icon(
-            //           Icons.arrow_back,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //       Expanded(child: Container()),
-            //       IconButton(
-            //         onPressed: () {},
-            //         icon: const Icon(
-            //           Icons.share,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //       IconButton(
-            //         onPressed: () {},
-            //         icon: const Icon(
-            //           Icons.favorite,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-
-            // ),
-
             Positioned(
               bottom: -40,
               child: Container(
                 width: size.width,
-                height: size.height * .12,
+                height: size.height * .1,
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -433,17 +435,20 @@ class CoustomImageView extends StatelessWidget {
                     return Padding(
                       padding:
                           const EdgeInsets.only(left: 16, top: 12, bottom: 6),
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        // color: Colors.amber,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    data.addImag[index].toString()),
-                                fit: BoxFit.cover),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
+                      child: InkWell(
+                        onTap: () => data.setIndex(index),
+                        child: Container(
+                          height: 100,
+                          width: 80,
+                          // color: Colors.amber,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      data.addImag[index].toString()),
+                                  fit: BoxFit.cover),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10))),
+                        ),
                       ),
                     );
                   },

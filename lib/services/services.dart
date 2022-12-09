@@ -18,7 +18,7 @@ class Services {
       );
       if (response.statusCode! >= 200 || response.statusCode! <= 299) {
         log("Sucess");
-        log(response.data.toString());
+        // log(response.data.toString());
         return AddResponce.fromJson(response.data);
       }
     } catch (e) {

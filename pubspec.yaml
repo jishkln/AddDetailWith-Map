@@ -41,6 +41,8 @@ dependencies:
   dio: ^4.0.6
   google_maps_flutter: ^2.2.1
   get: ^4.6.5
+  flutter_geocoder:
+
 
 dev_dependencies:
   flutter_test:

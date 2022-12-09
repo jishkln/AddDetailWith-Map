@@ -24,6 +24,7 @@ class AdDetail {
     this.adType,
     this.createdAt,
     this.price,
+    this.specialMention,
   });
 
   String? category;
@@ -34,6 +35,8 @@ class AdDetail {
   String? adStatus;
   String? adType;
   DateTime? createdAt;
+  List<String>? specialMention;
+
   int? price;
 
   factory AdDetail.fromJson(Map<String, dynamic> json) => AdDetail(
@@ -41,6 +44,8 @@ class AdDetail {
         subCategory: json["sub_category"],
         description: json["description"],
         imageUrl: List<String>.from(json["image_url"].map((x) => x)),
+        specialMention:
+            List<String>.from(json["special_mention"].map((x) => x)),
         adPostedAddress: json["ad_posted_address"],
         adStatus: json["ad_status"],
         adType: json["ad_type"],
